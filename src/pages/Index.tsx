@@ -14,12 +14,12 @@ const Index = () => {
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-in fade-in slide-in-from-bottom-4 duration-700">
-            Smart Timetable Generator
+            Smart Gap Utilizer
           </h1>
           
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-900">
-            Create optimized academic schedules in minutes using advanced genetic algorithms. 
-            Balance constraints, preferences, and resources effortlessly.
+            Optimize your schedule by intelligently utilizing gaps between classes.
+            Advanced genetic algorithms balance constraints and maximize efficiency.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-in fade-in slide-in-from-bottom-6 duration-1000">
