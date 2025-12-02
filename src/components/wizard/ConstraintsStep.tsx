@@ -1,11 +1,10 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Trash2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { useWizard } from "@/contexts/WizardContext";
 
 interface Constraint {
   id: string;
@@ -13,25 +12,21 @@ interface Constraint {
 }
 
 const ConstraintsStep = () => {
-  const [hardConstraints, setHardConstraints] = useState<Constraint[]>([
-    { id: "1", description: "" }
-  ]);
-  
-  const [softConstraints, setSoftConstraints] = useState<Constraint[]>([
-    { id: "1", description: "" }
-  ]);
+  const { hardConstraints, setHardConstraints, softConstraints, setSoftConstraints } = useWizard();
 
   const addHardConstraint = () => {
     setHardConstraints([...hardConstraints, {
       id: Date.now().toString(),
-      description: ""
+      description: "",
+      isHard: true
     }]);
   };
 
   const addSoftConstraint = () => {
     setSoftConstraints([...softConstraints, {
       id: Date.now().toString(),
-      description: ""
+      description: "",
+      isHard: false
     }]);
   };
 

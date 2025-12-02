@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Plus, Trash2, BookOpen } from "lucide-react";
+import { useWizard } from "@/contexts/WizardContext";
 
 interface Course {
   id: string;
@@ -13,9 +13,7 @@ interface Course {
 }
 
 const CoursesStep = () => {
-  const [courses, setCourses] = useState<Course[]>([
-    { id: "1", name: "", code: "", hoursPerWeek: 0 }
-  ]);
+  const { courses, setCourses } = useWizard();
 
   const addCourse = () => {
     setCourses([...courses, {

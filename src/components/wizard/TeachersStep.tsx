@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Plus, Trash2, UserCheck } from "lucide-react";
+import { useWizard } from "@/contexts/WizardContext";
 
 interface Teacher {
   id: string;
@@ -13,9 +13,7 @@ interface Teacher {
 }
 
 const TeachersStep = () => {
-  const [teachers, setTeachers] = useState<Teacher[]>([
-    { id: "1", name: "", email: "", maxHoursPerWeek: 0 }
-  ]);
+  const { teachers, setTeachers } = useWizard();
 
   const addTeacher = () => {
     setTeachers([...teachers, {
