@@ -1,12 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight, Calendar, Users, DoorOpen, Settings } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar, Users, DoorOpen, Settings, Loader2 } from "lucide-react";
+import { WizardProvider, useWizard } from "@/contexts/WizardContext";
 import CoursesStep from "@/components/wizard/CoursesStep";
 import TeachersStep from "@/components/wizard/TeachersStep";
 import RoomsStep from "@/components/wizard/RoomsStep";
 import ConstraintsStep from "@/components/wizard/ConstraintsStep";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const steps = [
   { id: 1, title: "Courses", icon: Calendar, component: CoursesStep },
@@ -15,8 +19,12 @@ const steps = [
   { id: 4, title: "Constraints", icon: Settings, component: ConstraintsStep },
 ];
 
-const Wizard = () => {
+const WizardContent = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { courses, teachers, rooms, hardConstraints, softConstraints } = useWizard();
   const progress = (currentStep / steps.length) * 100;
 
   const handleNext = () => {
@@ -28,6 +36,68 @@ const Wizard = () => {
   const handlePrevious = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleGenerate = async () => {
+    setIsGenerating(true);
+    
+    try {
+      // Validate data
+      const validCourses = courses.filter(c => c.name && c.code && c.hoursPerWeek > 0);
+      const validTeachers = teachers.filter(t => t.name && t.email && t.maxHoursPerWeek > 0);
+      const validRooms = rooms.filter(r => r.name && r.capacity > 0);
+      
+      if (validCourses.length === 0 || validTeachers.length === 0 || validRooms.length === 0) {
+        toast({
+          title: "Missing Data",
+          description: "Please fill in all required fields before generating.",
+          variant: "destructive",
+        });
+        setIsGenerating(false);
+        return;
+      }
+
+      // Prepare constraints
+      const allConstraints = [
+        ...hardConstraints.filter(c => c.description).map(c => ({ ...c, isHard: true })),
+        ...softConstraints.filter(c => c.description).map(c => ({ ...c, isHard: false })),
+      ];
+
+      // Call edge function
+      const { data, error } = await supabase.functions.invoke('generate-timetable', {
+        body: {
+          courses: validCourses,
+          teachers: validTeachers,
+          rooms: validRooms,
+          constraints: allConstraints,
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Your timetable has been generated successfully.",
+      });
+
+      // Navigate to results page
+      navigate('/results', {
+        state: {
+          timetable: data.timetable,
+          fitnessScore: data.fitnessScore,
+        }
+      });
+
+    } catch (error) {
+      console.error('Error generating timetable:', error);
+      toast({
+        title: "Generation Failed",
+        description: "There was an error generating your timetable. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -99,17 +169,44 @@ const Wizard = () => {
             Previous
           </Button>
           
-          <Button
-            onClick={handleNext}
-            disabled={currentStep === steps.length}
-            className="shadow-md shadow-primary/20"
-          >
-            {currentStep === steps.length ? "Generate Timetable" : "Next"}
-            <ChevronRight className="w-4 h-4 ml-2" />
-          </Button>
+          {currentStep === steps.length ? (
+            <Button
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="shadow-md shadow-primary/20"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  Generate Timetable
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button
+              onClick={handleNext}
+              className="shadow-md shadow-primary/20"
+            >
+              Next
+              <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          )}
         </div>
       </div>
     </div>
+  );
+};
+
+const Wizard = () => {
+  return (
+    <WizardProvider>
+      <WizardContent />
+    </WizardProvider>
   );
 };
 

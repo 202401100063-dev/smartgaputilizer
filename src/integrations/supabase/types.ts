@@ -14,7 +14,129 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      constraints: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_hard: boolean
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          is_hard: boolean
+          type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_hard?: boolean
+          type?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          code: string
+          created_at: string
+          hours_per_week: number
+          id: string
+          name: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          hours_per_week: number
+          id?: string
+          name: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          hours_per_week?: number
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      rooms: {
+        Row: {
+          capacity: number
+          created_at: string
+          features: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          capacity: number
+          created_at?: string
+          features?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          capacity?: number
+          created_at?: string
+          features?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      teachers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          max_hours_per_week: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          max_hours_per_week: number
+          name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          max_hours_per_week?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      timetables: {
+        Row: {
+          created_at: string
+          data: Json
+          fitness_score: number | null
+          id: string
+          name: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          fitness_score?: number | null
+          id?: string
+          name: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          fitness_score?: number | null
+          id?: string
+          name?: string
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

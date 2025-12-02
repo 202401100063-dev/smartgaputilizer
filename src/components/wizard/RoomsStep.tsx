@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Plus, Trash2, Building2 } from "lucide-react";
+import { useWizard } from "@/contexts/WizardContext";
 
 interface Room {
   id: string;
@@ -13,9 +13,7 @@ interface Room {
 }
 
 const RoomsStep = () => {
-  const [rooms, setRooms] = useState<Room[]>([
-    { id: "1", name: "", capacity: 0, features: "" }
-  ]);
+  const { rooms, setRooms } = useWizard();
 
   const addRoom = () => {
     setRooms([...rooms, {
