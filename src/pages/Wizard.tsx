@@ -38,7 +38,7 @@ const Wizard = () => {
       <div className="container mx-auto px-4 max-w-5xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Create Your Timetable</h1>
+          <h1 className="text-3xl font-bold mb-2">Create Your Schedule</h1>
           <p className="text-muted-foreground">Follow the steps to input all necessary data</p>
         </div>
 
