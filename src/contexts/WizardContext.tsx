@@ -12,6 +12,7 @@ interface Teacher {
   name: string;
   email: string;
   maxHoursPerWeek: number;
+  courseId: string;
 }
 
 interface Room {
@@ -48,7 +49,7 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
   ]);
   
   const [teachers, setTeachers] = useState<Teacher[]>([
-    { id: "1", name: "", email: "", maxHoursPerWeek: 0 }
+    { id: "1", name: "", email: "", maxHoursPerWeek: 0, courseId: "" }
   ]);
   
   const [rooms, setRooms] = useState<Room[]>([
