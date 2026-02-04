@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Plus, Trash2, UserCheck } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useWizard } from "@/contexts/WizardContext";
 
 interface Teacher {
@@ -10,17 +11,19 @@ interface Teacher {
   name: string;
   email: string;
   maxHoursPerWeek: number;
+  courseId: string;
 }
 
 const TeachersStep = () => {
-  const { teachers, setTeachers } = useWizard();
+  const { teachers, setTeachers, courses } = useWizard();
 
   const addTeacher = () => {
     setTeachers([...teachers, {
       id: Date.now().toString(),
       name: "",
       email: "",
-      maxHoursPerWeek: 0
+      maxHoursPerWeek: 0,
+      courseId: ""
     }]);
   };
 
@@ -33,6 +36,9 @@ const TeachersStep = () => {
       teacher.id === id ? { ...teacher, [field]: value } : teacher
     ));
   };
+
+  // Get courses that have names filled in
+  const availableCourses = courses.filter(course => course.name.trim() !== "");
 
   return (
     <div className="space-y-6">
@@ -82,6 +88,31 @@ const TeachersStep = () => {
                     value={teacher.maxHoursPerWeek || ""}
                     onChange={(e) => updateTeacher(teacher.id, "maxHoursPerWeek", parseInt(e.target.value) || 0)}
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor={`subject-${teacher.id}`}>Subject Specialization</Label>
+                  <Select
+                    value={teacher.courseId}
+                    onValueChange={(value) => updateTeacher(teacher.id, "courseId", value)}
+                  >
+                    <SelectTrigger id={`subject-${teacher.id}`}>
+                      <SelectValue placeholder="Select subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableCourses.length > 0 ? (
+                        availableCourses.map((course) => (
+                          <SelectItem key={course.id} value={course.id}>
+                            {course.name} ({course.code})
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="no-courses" disabled>
+                          Add courses first
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               
